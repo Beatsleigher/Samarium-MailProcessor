@@ -1,0 +1,33 @@
+﻿#################################################################
+##      ========== Samarium Configuration File ==========      ##
+#################################################################
+##                                                             ##
+##  This configuration file contains configurations relevant   ##
+##  to Samarium and certain core modules ONLY.                 ##
+##  This configuration file is modular and may be edited to    ##
+##  add optional functionality to Samarium if required.        ##
+##                                                             ##
+#################################################################
+##                                                             ##
+##  This configuration file is written in YAML (Yet Another    ##
+##  Markup Language) for ease of understanding and             ##
+##  configurability.                                           ##
+##  YAML uses human-friendly key-words and structure.          ##
+##                                                             ##
+##  For more information on YAML, check out this awesome       ##
+##  cheat sheet: https://gist.github.com/jonschlinkert/5170877 ##
+##                                                             ##
+#################################################################
+
+search_interval: 00:10:00
+max_emails: 60000
+use_multithreading: true
+core_use: -1
+pre_index_file_ext: .noidx
+post_index_file_ext: .eml
+search_directories: []
+domain_regexp: ^(((?!-))(xn--)?[a-z0-9-_]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$
+username_regexp: '[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+'
+archive_root: ./container/
+
+
