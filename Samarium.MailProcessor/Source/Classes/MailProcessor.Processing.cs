@@ -1,9 +1,9 @@
 ﻿using System;
 
 namespace Samarium.MailProcessor {
-
+    using MimeKit;
     using PluginFramework;
-
+    using Samarium.PluginFramework.Common;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -224,6 +224,58 @@ namespace Samarium.MailProcessor {
             }
 
             return fileList;
+        }
+
+        async Task<ElasticEmailDocument> ParseMimeMessage(FileInfo input) {
+
+            var mimeMsg = default(MimeMessage);
+            var elasticDocument = default(ElasticEmailDocument);
+
+            // First parse the file to an understandable object
+            using (var iStream = input.Open(FileMode.Open)) {
+                try {
+                    var parserOptions = PluginConfig.GetConfig<ParserOptions>("mime_parse_options");
+                    mimeMsg = await MimeMessage.LoadAsync(parserOptions, iStream);
+                } catch (Exception ex) {
+                    Error("An error occurred parsing file {0}!", input.FullName);
+                    Trace("Source: {0}", ex.Source);
+                    Trace("Stack trace: {0}", ex.StackTrace);
+                    Error("Cannot continue parsing this email!");
+                    return default; // Return the default value; we will decide what happens to these later
+                }
+            }
+
+            // Now let's attempt to get all of the attachments, including embedded ones
+
+
+            return elasticDocument;
+        }
+
+        async Task<IEnumerable<RawEmailAttachment>> GetMimeAttachmentsAsync(MimeMessage mimeMsg) {
+            var attachmentList = new List<RawEmailAttachment>();
+            const string noFilename = "no_filename";
+
+            // Loop through all attachments
+            // Filter out bad ones with no content type and no file name
+            foreach (var attachment in mimeMsg.BodyParts.Where(x => !string.IsNullOrEmpty(x.ContentType.Name) && !string.IsNullOrEmpty(x.ContentDisposition.FileName))) {
+
+                var fName = attachment.ContentDisposition.FileName ?? attachment.ContentType.Name ?? noFilename;
+                var contentBytes = default(byte[]);
+
+                // Load the attachment in to a stream so we can process it correctly.
+                using (var memStream = new MemoryStream()) {
+                    await attachment.WriteToAsync(memStream);
+
+                    contentBytes = memStream.ToArray();
+                }
+
+                // Now let's try the (almost) impossible and see if this attachment is a text file or not.
+                if (!contentBytes.HasBinaryContent()) {
+                    // Apparently no binary content was detect
+                }
+
+            }
+
         }
 
     }

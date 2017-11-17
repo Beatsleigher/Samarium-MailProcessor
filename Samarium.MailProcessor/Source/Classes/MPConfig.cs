@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Samarium.MailProcessor {
-
+    using MimeKit;
     using PluginFramework;
     using PluginFramework.Config;
 
@@ -73,6 +73,16 @@ namespace Samarium.MailProcessor {
 
         [YamlMember(Alias = "archive_root", ApplyNamingConventions = true)]
         public string ArchiveRootPath { get; set; } = "./container/";
+
+        [YamlMember(Alias = "mime_parse_options", ApplyNamingConventions = true)]
+        public ParserOptions MimeParserOptions { get; set; } = new ParserOptions {
+                                                                        AddressParserComplianceMode = RfcComplianceMode.Loose,
+                                                                        AllowAddressesWithoutDomain = false,
+                                                                        CharsetEncoding = Encoding.UTF8,
+                                                                        ParameterComplianceMode = RfcComplianceMode.Loose,
+                                                                        RespectContentLength = true,
+                                                                        Rfc2047ComplianceMode = RfcComplianceMode.Loose
+                                                                    };
         #endregion
 
         #region Variables
